@@ -62,13 +62,13 @@ procedure WriteBricks;
           end;
         if r = 6 then
           begin
-            SetTextColor(_CYAN);
+            SetTextColor(_BLUE);
           end;
         if r = 7 then
           begin
             SetTextColor(_MAGENTA);
           end;
-        for c := 1 to scrw do
+        for c := 2 to scrw - 1 do
           begin
             GotoXY(c,r);
             Write(BrickChar);
@@ -144,6 +144,25 @@ procedure Help;
     terminal := ord(tc) - 48;
   end;
 
+procedure DrawBorder;
+var
+   l: byte;
+begin
+   SetTextColor(_CYAN);
+   gotoxy(1,1);
+   write('+');
+   for l:=2 to scrw - 1 do
+     begin
+        write('-');
+     end;
+   write('+');
+   for l:=2 to scrh-3 do
+     begin
+        gotoxy(1,l); write('|');
+        gotoxy(scrw,l); write('|');
+     end;
+end;
+
 procedure Init;
   var
     r, c: Integer;
@@ -157,14 +176,14 @@ procedure Init;
     exit := False;
     ClrScr;
     for r := 3 to 8 do
-      for c := 1 to scrw do
+      for c := 2 to scrw - 1 do
         begin
           bricks[r, c] := true;
         end;
     WriteBricks;
     SetTextColor(_WHITE);
-    GotoXY(50, 24);
-    Write('EVAS10N.PAS by Marco V. 2020');
+    GotoXY(35, 24);
+    Write('EVAS10N.PAS by Marco V. 2020, ivang78 2023');
   end;
 
 begin
@@ -183,6 +202,7 @@ begin
     end;
   repeat
     Init;
+    DrawBorder;
     repeat
       w := -1;
       x := bat + 1;
@@ -243,7 +263,7 @@ begin
           begin
             if (y >= 3) and (y <= 8) then
               bricks[y, x] := false;
-            if (x > 1) and (x < scrw) and (y >= 3) and (y <= 8) and (bricks[y, x + v]) then
+            if (x > 2) and (x < scrw - 1) and (y >= 3) and (y <= 8) and (bricks[y, x + v]) then
               begin
                 bricks[y, x + v] := False;
                 GotoXY(x + v, y);
@@ -280,7 +300,7 @@ begin
                 repeat until keypressed;
                 exit := True;
               end;
-            if ((x = 1) or (x = scrw)) and dc = false then
+            if ((x = 2) or (x = scrw - 1)) and dc = false then
               begin
                 v := -v;
                 dc := true;
