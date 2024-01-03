@@ -1,9 +1,21 @@
-Procedure SetTextColor(c: cstr);
+procedure SetTextColor(c: byte);
+var cs: string[2];
 begin
-    if terminal = 1 then
-        begin
-            write(c);
-        end;
+  if terminal = 1 then
+    begin
+      str(c + 30, cs);
+      write(#27); write(#91); write(cs); write('m');
+    end;
+end;
+
+procedure SetTextBg(c: byte);
+var cs: string[2];
+begin
+  if terminal = 1 then
+    begin
+      str(c + 40, cs);
+      write(#27); write(#91); write(cs); write('m');
+    end;
 end;
 
 { emulate missing CRT functions }
@@ -15,23 +27,11 @@ end;
 { ANSI CursorOff }
 procedure CursorOff;
 begin
-  { \e[?25l }
-  Write(#27); { \e }
-  Write(#91); { [  }
-  Write(#63); { ?  }
-  Write(#50); { 2  }
-  Write(#53); { 5  }
-  Write(#108); { l }
+  Write(_COFF);
 end;
 
 { ANSI CursorOn }
 procedure CursorOn;
 begin
-  { \e[?25h }
-  Write(#27); { \e }
-  Write(#91); { [  }
-  Write(#63); { ?  }
-  Write(#50); { 2  }
-  Write(#53); { 5  }
-  Write(#104); { h }
+  Write(_CON);
 end;
